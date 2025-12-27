@@ -110,21 +110,21 @@ const AIMechanicModal = ({ onClose }) => {
 
     return (
         <div className="absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in-up">
-            <div className="w-full h-[80%] sm:h-auto sm:w-[90%] bg-slate-900 border border-amber-500/50 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+            <div className="w-full h-[80%] sm:h-auto sm:w-[90%] md:w-[600px] lg:w-[700px] bg-slate-900 border border-amber-500/50 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh]">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-slate-900 to-amber-950/30 p-4 border-b border-slate-700 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <div className="p-2 bg-amber-500 rounded-lg text-slate-900"><Sparkles size={20} className="fill-current"/></div>
+                <div className="bg-gradient-to-r from-slate-900 to-amber-950/30 p-3 sm:p-4 border-b border-slate-700 flex justify-between items-center">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="p-1.5 sm:p-2 bg-amber-500 rounded-lg text-slate-900"><Sparkles size={18} className="sm:w-5 sm:h-5 fill-current"/></div>
                         <div>
-                            <h3 className="font-bold text-lg text-white">AI Mechanic</h3>
-                            <p className="text-xs text-amber-500 font-mono">Powered by Gemini</p>
+                            <h3 className="font-bold text-base sm:text-lg md:text-xl text-white">AI Mechanic</h3>
+                            <p className="text-[10px] sm:text-xs text-amber-500 font-mono">Powered by Gemini</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full text-slate-400"><X size={20}/></button>
+                    <button onClick={onClose} className="p-1.5 sm:p-2 hover:bg-slate-800 rounded-full text-slate-400"><X size={18} className="sm:w-5 sm:h-5"/></button>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 p-4 overflow-y-auto space-y-4">
+                <div className="flex-1 p-3 sm:p-4 md:p-6 overflow-y-auto space-y-3 sm:space-y-4">
                     {!response && !loading && (
                         <div className="text-center text-slate-500 mt-8 space-y-2">
                             <Wrench size={40} className="mx-auto opacity-20"/>
@@ -155,21 +155,21 @@ const AIMechanicModal = ({ onClose }) => {
                 </div>
 
                 {/* Input */}
-                <div className="p-4 bg-slate-900 border-t border-slate-800">
+                <div className="p-3 sm:p-4 bg-slate-900 border-t border-slate-800">
                     <div className="flex gap-2">
                         <input 
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Ask about your car..."
-                            className="flex-1 bg-slate-800 border-none outline-none rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:ring-1 focus:ring-amber-500"
+                            className="flex-1 bg-slate-800 border-none outline-none rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-white placeholder-slate-500 focus:ring-1 focus:ring-amber-500"
                             onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
                         />
                         <button 
                             onClick={handleAnalyze}
                             disabled={loading || !query.trim()}
-                            className="bg-amber-500 text-slate-900 rounded-xl px-4 font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-400 transition-colors"
+                            className="bg-amber-500 text-slate-900 rounded-xl px-3 sm:px-4 font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-400 transition-colors"
                         >
-                            <ArrowRight size={20}/>
+                            <ArrowRight size={18} className="sm:w-5 sm:h-5"/>
                         </button>
                     </div>
                 </div>
@@ -206,50 +206,50 @@ const LubeLink = () => {
         <div className="flex flex-col items-center justify-center h-full bg-slate-900 text-white p-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-500/20 via-slate-900 to-slate-900 z-0"></div>
         
-        <div className="z-10 text-center space-y-8 animate-fade-in-up">
+        <div className="z-10 text-center space-y-6 sm:space-y-8 md:space-y-10 animate-fade-in-up px-4 sm:px-6 md:px-8">
             <div className="flex justify-center mb-4">
-            <div className="w-20 h-20 bg-amber-500 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)]">
-                <Droplets size={40} className="text-slate-900" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-amber-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.5)]">
+                <Droplets size={32} className="sm:w-10 sm:h-10 md:w-12 md:h-12 text-slate-900" />
             </div>
             </div>
-            <h1 className="text-5xl font-black tracking-tighter italic">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter italic">
             LUBE<span className="text-amber-500">LINK</span>
             </h1>
-            <p className="text-slate-400 text-lg max-w-xs mx-auto">
+            <p className="text-slate-400 text-base sm:text-lg md:text-xl max-w-xs sm:max-w-sm md:max-w-md mx-auto">
             The instant oil change network. <br/> No shops. No waiting. We come to you.
             </p>
 
-            <div className="flex flex-col gap-4 w-full max-w-sm mx-auto mt-12">
+            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm sm:max-w-md md:max-w-lg mx-auto mt-8 sm:mt-12">
             <button 
                 onClick={() => setView('customer')}
-                className="group relative flex items-center justify-between p-6 bg-slate-800 rounded-xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-amber-500/50"
+                className="group relative flex items-center justify-between p-4 sm:p-5 md:p-6 bg-slate-800 rounded-xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-amber-500/50 flex-1"
             >
-                <div className="flex items-center gap-4">
-                <div className="p-3 bg-amber-500/10 rounded-lg text-amber-500 group-hover:bg-amber-500 group-hover:text-slate-900 transition-colors">
-                    <Car size={24} />
+                <div className="flex items-center gap-3 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-amber-500/10 rounded-lg text-amber-500 group-hover:bg-amber-500 group-hover:text-slate-900 transition-colors">
+                    <Car size={20} className="sm:w-6 sm:h-6" />
                 </div>
                 <div className="text-left">
-                    <div className="font-bold text-lg">I Need Service</div>
-                    <div className="text-xs text-slate-500">Get oil changed at home/work</div>
+                    <div className="font-bold text-base sm:text-lg md:text-xl">I Need Service</div>
+                    <div className="text-xs sm:text-sm text-slate-500">Get oil changed at home/work</div>
                 </div>
                 </div>
-                <ArrowRight className="text-slate-600 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="text-slate-600 group-hover:text-white group-hover:translate-x-1 transition-all w-5 h-5 sm:w-6 sm:h-6" />
             </button>
 
             <button 
                 onClick={() => setView('provider')}
-                className="group relative flex items-center justify-between p-6 bg-slate-800 rounded-xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-blue-500/50"
+                className="group relative flex items-center justify-between p-4 sm:p-5 md:p-6 bg-slate-800 rounded-xl hover:bg-slate-700 transition-all border border-slate-700 hover:border-blue-500/50 flex-1"
             >
-                <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-500/10 rounded-lg text-blue-500 group-hover:bg-blue-500 group-hover:text-slate-900 transition-colors">
-                    <Wrench size={24} />
+                <div className="flex items-center gap-3 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-blue-500/10 rounded-lg text-blue-500 group-hover:bg-blue-500 group-hover:text-slate-900 transition-colors">
+                    <Wrench size={20} className="sm:w-6 sm:h-6" />
                 </div>
                 <div className="text-left">
-                    <div className="font-bold text-lg">I Am A Mechanic</div>
-                    <div className="text-xs text-slate-500">Find jobs, track earnings</div>
+                    <div className="font-bold text-base sm:text-lg md:text-xl">I Am A Mechanic</div>
+                    <div className="text-xs sm:text-sm text-slate-500">Find jobs, track earnings</div>
                 </div>
                 </div>
-                <ArrowRight className="text-slate-600 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="text-slate-600 group-hover:text-white group-hover:translate-x-1 transition-all w-5 h-5 sm:w-6 sm:h-6" />
             </button>
             </div>
         </div>
@@ -353,60 +353,60 @@ const LubeLink = () => {
         };
 
         return (
-            <div className="flex flex-col h-full bg-slate-900 text-slate-100">
+            <div className="flex flex-col lg:flex-row h-full bg-slate-900 text-slate-100">
                 {/* Interactive Map Background */}
-                <div className="flex-1 bg-slate-800 relative overflow-hidden group">
+                <div className="flex-1 bg-slate-800 relative overflow-hidden group min-h-[300px] sm:min-h-[400px] lg:min-h-full">
                     <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                     
                     {/* Map Markers */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                         <div className="relative">
-                        <div className="w-4 h-4 bg-amber-500 rounded-full animate-ping absolute top-0 left-0"></div>
-                        <div className="w-4 h-4 bg-amber-500 rounded-full border-2 border-white shadow-lg z-10 relative"></div>
-                        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur border border-slate-700 px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap shadow-xl flex items-center gap-2">
-                            <MapPin size={10} className="text-amber-500"/>
-                            {address.length > 15 ? address.substring(0,15)+'...' : address}
+                        <div className="w-3 h-3 sm:w-4 sm:h-4 bg-amber-500 rounded-full animate-ping absolute top-0 left-0"></div>
+                        <div className="w-3 h-3 sm:w-4 sm:h-4 bg-amber-500 rounded-full border-2 border-white shadow-lg z-10 relative"></div>
+                        <div className="absolute -bottom-8 sm:-bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 sm:px-3 py-1 rounded-lg text-[10px] sm:text-xs font-bold whitespace-nowrap shadow-xl flex items-center gap-1 sm:gap-2">
+                            <MapPin size={8} className="sm:w-[10px] sm:h-[10px] text-amber-500"/>
+                            <span className="max-w-[120px] sm:max-w-none truncate">{address.length > 20 ? address.substring(0,20)+'...' : address}</span>
                         </div>
                         </div>
                     </div>
                     
                     {/* Header */}
-                    <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none">
-                        <button onClick={() => setView('landing')} className="pointer-events-auto p-2 bg-slate-900/90 rounded-full shadow-lg backdrop-blur-md">
-                        <Menu size={20} />
+                    <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 flex justify-between items-start pointer-events-none">
+                        <button onClick={() => setView('landing')} className="pointer-events-auto p-1.5 sm:p-2 bg-slate-900/90 rounded-full shadow-lg backdrop-blur-md">
+                        <Menu size={18} className="sm:w-5 sm:h-5" />
                         </button>
-                        <div className="bg-slate-900/90 px-3 py-1 rounded-full text-xs font-mono shadow-lg backdrop-blur-md border border-slate-700">
+                        <div className="bg-slate-900/90 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-mono shadow-lg backdrop-blur-md border border-slate-700">
                         <span className="text-green-400">●</span> {savedCar.make} {savedCar.model}
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Action Sheet */}
-                <div className="bg-slate-900 border-t border-slate-800 p-6 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] -mt-6 relative z-10 min-h-[400px]">
+                <div className="bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800 p-4 sm:p-5 md:p-6 rounded-t-3xl lg:rounded-t-none lg:rounded-r-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] lg:shadow-[-10px_0_40px_rgba(0,0,0,0.5)] -mt-6 lg:-mt-0 lg:-ml-6 relative z-10 min-h-[400px] sm:min-h-[450px] lg:min-h-full lg:w-96 xl:w-[28rem] overflow-y-auto">
                 
-                {/* 1. STATUS: IDLE / SELECTION */}
-                {status === 'idle' && bookingStage === 'selection' && (
-                    <div className="space-y-6 animate-slide-up relative">
-                        
-                        {/* AI Mechanic Banner */}
-                        <button 
-                            onClick={() => setShowAI(true)}
-                            className="w-full bg-gradient-to-r from-amber-600/20 to-amber-900/20 border border-amber-500/50 p-4 rounded-xl flex items-center justify-between group animate-pulse-glow"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-amber-500 rounded-lg text-slate-900"><Sparkles size={20} className="fill-current"/></div>
-                                <div className="text-left">
-                                    <div className="font-bold text-sm text-amber-500">Ask AI Mechanic ✨</div>
-                                    <div className="text-xs text-slate-400">Diagnose sounds or check maintenance</div>
-                                </div>
-                            </div>
-                            <ArrowRight size={16} className="text-amber-500 group-hover:translate-x-1 transition-transform"/>
-                        </button>
+                        {/* 1. STATUS: IDLE / SELECTION */}
+                        {status === 'idle' && bookingStage === 'selection' && (
+                            <div className="space-y-4 sm:space-y-5 md:space-y-6 animate-slide-up relative">
+                                
+                                {/* AI Mechanic Banner */}
+                                <button 
+                                    onClick={() => setShowAI(true)}
+                                    className="w-full bg-gradient-to-r from-amber-600/20 to-amber-900/20 border border-amber-500/50 p-3 sm:p-4 rounded-xl flex items-center justify-between group animate-pulse-glow"
+                                >
+                                    <div className="flex items-center gap-2 sm:gap-3">
+                                        <div className="p-1.5 sm:p-2 bg-amber-500 rounded-lg text-slate-900"><Sparkles size={18} className="sm:w-5 sm:h-5 fill-current"/></div>
+                                        <div className="text-left">
+                                            <div className="font-bold text-xs sm:text-sm md:text-base text-amber-500">Ask AI Mechanic ✨</div>
+                                            <div className="text-[10px] sm:text-xs text-slate-400">Diagnose sounds or check maintenance</div>
+                                        </div>
+                                    </div>
+                                    <ArrowRight size={14} className="sm:w-4 sm:h-4 text-amber-500 group-hover:translate-x-1 transition-transform"/>
+                                </button>
 
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-xl font-bold">Service Details</h2>
-                            <span className="text-xs text-amber-500 font-mono bg-amber-500/10 px-2 py-1 rounded">{savedCar.oil}</span>
-                        </div>
+                                <div className="flex justify-between items-center flex-wrap gap-2">
+                                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Service Details</h2>
+                                    <span className="text-[10px] sm:text-xs text-amber-500 font-mono bg-amber-500/10 px-2 py-1 rounded">{savedCar.oil}</span>
+                                </div>
 
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Location</label>
@@ -431,21 +431,21 @@ const LubeLink = () => {
                             </div>
                         </div>
                         
-                        <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
                             {serviceOptions.map(opt => {
                             const finalPrice = hasOwnOil ? Math.max(20, opt.price - 25) : opt.price;
                             return (
-                                <button key={opt.id} onClick={() => setSelectedService(opt)} className={`flex-shrink-0 w-32 p-3 rounded-xl border-2 transition-all text-left ${selectedService.id === opt.id ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700 bg-slate-800'}`}>
-                                <div className="text-xs font-bold mb-1 truncate">{opt.name}</div>
-                                <div className="text-lg font-black text-white">${finalPrice}</div>
-                                <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1"> <Clock size={10} /> {opt.time} </div>
+                                <button key={opt.id} onClick={() => setSelectedService(opt)} className={`p-3 sm:p-4 rounded-xl border-2 transition-all text-left ${selectedService.id === opt.id ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700 bg-slate-800'}`}>
+                                <div className="text-xs sm:text-sm font-bold mb-1 truncate">{opt.name}</div>
+                                <div className="text-base sm:text-lg md:text-xl font-black text-white">${finalPrice}</div>
+                                <div className="text-[10px] sm:text-xs text-slate-500 mt-1 flex items-center gap-1"> <Clock size={10} className="sm:w-3 sm:h-3" /> {opt.time} </div>
                                 </button>
                             );
                             })}
                         </div>
 
-                        <button onClick={handleScheduleClick} className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-lg rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] transition-all flex items-center justify-center gap-2">
-                            <Calendar className="fill-current" size={20} /> SCHEDULE SERVICE
+                        <button onClick={handleScheduleClick} className="w-full py-3 sm:py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-base sm:text-lg md:text-xl rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] transition-all flex items-center justify-center gap-2">
+                            <Calendar className="fill-current w-4 h-4 sm:w-5 sm:h-5" /> SCHEDULE SERVICE
                         </button>
                     </div>
                 )}
@@ -461,18 +461,18 @@ const LubeLink = () => {
                             </div>
                         </div>
 
-                        <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar">
+                        <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-4 no-scrollbar">
                             {dates.map((d) => (
-                                <button key={d.id} onClick={() => setSelectedDateId(d.id)} className={`flex-shrink-0 w-16 h-20 rounded-2xl flex flex-col items-center justify-center gap-1 border transition-all ${selectedDateId === d.id ? 'bg-amber-500 text-slate-900 border-amber-500 shadow-lg scale-105' : 'bg-slate-800 border-slate-700 text-slate-400'}`}>
-                                    <span className="text-xs font-bold uppercase">{d.dayName}</span>
-                                    <span className="text-xl font-black">{d.dateNum}</span>
+                                <button key={d.id} onClick={() => setSelectedDateId(d.id)} className={`flex-shrink-0 w-12 h-16 sm:w-14 sm:h-20 md:w-16 md:h-24 rounded-xl sm:rounded-2xl flex flex-col items-center justify-center gap-0.5 sm:gap-1 border transition-all ${selectedDateId === d.id ? 'bg-amber-500 text-slate-900 border-amber-500 shadow-lg scale-105' : 'bg-slate-800 border-slate-700 text-slate-400'}`}>
+                                    <span className="text-[10px] sm:text-xs font-bold uppercase">{d.dayName}</span>
+                                    <span className="text-lg sm:text-xl md:text-2xl font-black">{d.dateNum}</span>
                                 </button>
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                             {timeSlots.map((time, idx) => (
-                                <button key={time} onClick={() => setSelectedTimeId(idx)} className={`py-3 rounded-lg text-sm font-bold border transition-all ${selectedTimeId === idx ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.5)]' : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-500'}`}>
+                                <button key={time} onClick={() => setSelectedTimeId(idx)} className={`py-2 sm:py-3 rounded-lg text-xs sm:text-sm font-bold border transition-all ${selectedTimeId === idx ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_15px_rgba(37,99,235,0.5)]' : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-500'}`}>
                                     {time}
                                 </button>
                             ))}
@@ -521,7 +521,7 @@ const LubeLink = () => {
                             <p className="text-slate-400 text-sm">Enter the 4-digit code sent to you</p>
                         </div>
 
-                        <div className="flex justify-center gap-4 py-4">
+                        <div className="flex justify-center gap-2 sm:gap-3 md:gap-4 py-4">
                             {[0,1,2,3].map((i) => (
                                 <input
                                     key={i}
@@ -530,12 +530,12 @@ const LubeLink = () => {
                                     maxLength="1"
                                     value={authCode[i]}
                                     onChange={(e) => handleCodeChange(i, e.target.value)}
-                                    className="w-14 h-16 bg-slate-800 border-2 border-slate-700 rounded-xl text-center text-2xl font-black focus:border-amber-500 focus:outline-none transition-colors"
+                                    className="w-12 h-14 sm:w-14 sm:h-16 md:w-16 md:h-20 bg-slate-800 border-2 border-slate-700 rounded-xl text-center text-xl sm:text-2xl md:text-3xl font-black focus:border-amber-500 focus:outline-none transition-colors"
                                 />
                             ))}
                         </div>
 
-                        <button onClick={handleVerifyCode} className="w-full py-4 bg-blue-600 hover:bg-blue-500 font-black text-lg rounded-xl shadow-lg transition-all">
+                        <button onClick={handleVerifyCode} className="w-full py-3 sm:py-4 bg-blue-600 hover:bg-blue-500 font-black text-base sm:text-lg md:text-xl rounded-xl shadow-lg transition-all">
                             VERIFY & VIEW BIDS
                         </button>
                     </div>
@@ -543,28 +543,28 @@ const LubeLink = () => {
 
                 {/* 5. STATUS: BIDDING REVIEW */}
                 {status === 'bidding_review' && (
-                    <div className="space-y-4 animate-slide-up h-full flex flex-col">
-                        <div className="flex justify-between items-center mb-2">
-                            <h2 className="text-xl font-bold">3 Bids Received</h2>
-                            <button onClick={handleCancel} className="text-xs text-red-400 font-bold">CANCEL</button>
+                    <div className="space-y-3 sm:space-y-4 animate-slide-up h-full flex flex-col">
+                        <div className="flex justify-between items-center mb-2 flex-wrap gap-2">
+                            <h2 className="text-lg sm:text-xl md:text-2xl font-bold">3 Bids Received</h2>
+                            <button onClick={handleCancel} className="text-xs sm:text-sm text-red-400 font-bold">CANCEL</button>
                         </div>
                         
-                        <div className="flex-1 space-y-3 overflow-y-auto pb-4 no-scrollbar">
+                        <div className="flex-1 space-y-2 sm:space-y-3 overflow-y-auto pb-4 no-scrollbar">
                             {receivedBids.map((bid) => (
-                                <div key={bid.id} onClick={() => handleConfirmBid(bid)} className="group bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-amber-500 cursor-pointer transition-all relative overflow-hidden">
-                                    {bid.ase && <div className="absolute top-0 right-0 bg-blue-600/20 text-blue-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg flex items-center gap-1 border-l border-b border-blue-600/30"> <Award size={10} /> ASE CERTIFIED </div>}
-                                    {!bid.ase && bid.price < 40 && <div className="absolute top-0 right-0 bg-green-600/20 text-green-400 text-[10px] font-bold px-2 py-1 rounded-bl-lg flex items-center gap-1 border-l border-b border-green-600/30"> <TrendingDown size={10} /> BEST PRICE </div>}
+                                <div key={bid.id} onClick={() => handleConfirmBid(bid)} className="group bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700 hover:border-amber-500 cursor-pointer transition-all relative overflow-hidden">
+                                    {bid.ase && <div className="absolute top-0 right-0 bg-blue-600/20 text-blue-400 text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-bl-lg flex items-center gap-1 border-l border-b border-blue-600/30"> <Award size={8} className="sm:w-[10px] sm:h-[10px]" /> ASE CERTIFIED </div>}
+                                    {!bid.ase && bid.price < 40 && <div className="absolute top-0 right-0 bg-green-600/20 text-green-400 text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-bl-lg flex items-center gap-1 border-l border-b border-green-600/30"> <TrendingDown size={8} className="sm:w-[10px] sm:h-[10px]" /> BEST PRICE </div>}
 
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <div className="font-bold text-lg text-white group-hover:text-amber-500 transition-colors">{bid.name}</div>
-                                            <div className="text-xs text-slate-400 flex items-center gap-1"> <Star size={10} className="text-amber-500 fill-amber-500"/> {bid.rating} • {bid.desc} </div>
+                                    <div className="flex justify-between items-start mb-2 gap-2">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="font-bold text-base sm:text-lg md:text-xl text-white group-hover:text-amber-500 transition-colors truncate">{bid.name}</div>
+                                            <div className="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1"> <Star size={8} className="sm:w-[10px] sm:h-[10px] text-amber-500 fill-amber-500"/> {bid.rating} • {bid.desc} </div>
                                         </div>
-                                        <div className="text-right mt-4">
-                                            <div className="text-2xl font-black text-white group-hover:scale-110 transition-transform">${bid.price}</div>
+                                        <div className="text-right flex-shrink-0">
+                                            <div className="text-xl sm:text-2xl md:text-3xl font-black text-white group-hover:scale-110 transition-transform">${bid.price}</div>
                                         </div>
                                     </div>
-                                    <div className="w-full bg-slate-700/50 py-2 rounded text-center text-xs font-bold text-slate-300 group-hover:bg-amber-500 group-hover:text-slate-900 transition-colors"> ACCEPT BID </div>
+                                    <div className="w-full bg-slate-700/50 py-1.5 sm:py-2 rounded text-center text-[10px] sm:text-xs font-bold text-slate-300 group-hover:bg-amber-500 group-hover:text-slate-900 transition-colors"> ACCEPT BID </div>
                                 </div>
                             ))}
                         </div>
@@ -574,24 +574,24 @@ const LubeLink = () => {
                 {/* 6. STATUS: FOUND */}
                 {status === 'found' && selectedBid && (
                     <div className="animate-fade-in">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 bg-slate-700 rounded-full overflow-hidden border-2 border-green-500 relative">
-                            <User className="w-full h-full p-2 text-slate-400" />
-                            {selectedBid.ase && <div className="absolute bottom-0 right-0 bg-blue-500 p-1 rounded-full border border-slate-900"><Award size={10} className="text-white"/></div>}
+                    <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 flex-wrap">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-slate-700 rounded-full overflow-hidden border-2 border-green-500 relative flex-shrink-0">
+                            <User className="w-full h-full p-1.5 sm:p-2 text-slate-400" />
+                            {selectedBid.ase && <div className="absolute bottom-0 right-0 bg-blue-500 p-0.5 sm:p-1 rounded-full border border-slate-900"><Award size={8} className="sm:w-[10px] sm:h-[10px] text-white"/></div>}
                         </div>
-                        <div>
-                        <h3 className="font-bold text-lg">{selectedBid.name}</h3>
-                        <div className="flex items-center gap-1 text-amber-500 text-sm"> <Star size={14} fill="currentColor" /> {selectedBid.rating} </div>
-                        <div className="text-slate-400 text-xs mt-1">Confirmed for {timeSlots[selectedTimeId] || 'Today'}</div>
+                        <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-base sm:text-lg md:text-xl truncate">{selectedBid.name}</h3>
+                        <div className="flex items-center gap-1 text-amber-500 text-xs sm:text-sm"> <Star size={12} className="sm:w-3.5 sm:h-3.5 fill-currentColor" /> {selectedBid.rating} </div>
+                        <div className="text-slate-400 text-[10px] sm:text-xs mt-1">Confirmed for {timeSlots[selectedTimeId] || 'Today'}</div>
                         </div>
-                        <div className="ml-auto flex flex-col items-end">
-                        <div className="text-xl font-bold font-mono text-green-400">BOOKED</div>
-                        <div className="text-sm font-bold text-slate-200">${selectedBid.price}</div>
+                        <div className="ml-auto flex flex-col items-end flex-shrink-0">
+                        <div className="text-lg sm:text-xl md:text-2xl font-bold font-mono text-green-400">BOOKED</div>
+                        <div className="text-xs sm:text-sm md:text-base font-bold text-slate-200">${selectedBid.price}</div>
                         </div>
                     </div>
-                    <div className="flex gap-3">
-                        <button className="flex-1 py-3 bg-slate-800 rounded-lg font-bold text-sm border border-slate-700 hover:bg-slate-700">Message</button>
-                        <button className="flex-1 py-3 bg-slate-800 rounded-lg font-bold text-sm border border-slate-700 hover:bg-slate-700">Call</button>
+                    <div className="flex gap-2 sm:gap-3">
+                        <button className="flex-1 py-2.5 sm:py-3 bg-slate-800 rounded-lg font-bold text-xs sm:text-sm border border-slate-700 hover:bg-slate-700">Message</button>
+                        <button className="flex-1 py-2.5 sm:py-3 bg-slate-800 rounded-lg font-bold text-xs sm:text-sm border border-slate-700 hover:bg-slate-700">Call</button>
                     </div>
                     </div>
                 )}
@@ -605,16 +605,16 @@ const LubeLink = () => {
     const ProviderView = () => {
         const incomingJob = { customer: "Sarah J.", car: "2019 Honda Civic", distance: "2.4 mi", price: "$45", rating: "5.0" };
         return (
-        <div className="flex flex-col h-full bg-slate-950 text-slate-100">
-            <div className="p-6 flex justify-between items-center bg-slate-900 border-b border-slate-800">
-            <div> <div className="text-xs text-slate-400 uppercase font-bold tracking-wider">Earnings Today</div> <div className="text-2xl font-black font-mono text-green-400">${earnings}</div> </div>
-            <div onClick={() => { setIsOnline(!isOnline); showNotification(isOnline ? "You are now offline" : "You are online and visible", "info"); }} className={`cursor-pointer px-4 py-2 rounded-full font-bold text-sm transition-all flex items-center gap-2 ${isOnline ? 'bg-green-500/20 text-green-400 border border-green-500/50' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
+        <div className="flex flex-col lg:flex-row h-full bg-slate-950 text-slate-100">
+            <div className="p-4 sm:p-5 md:p-6 flex justify-between items-center bg-slate-900 border-b lg:border-b-0 lg:border-r border-slate-800 lg:flex-col lg:justify-start lg:gap-4 lg:w-64 xl:w-80">
+            <div className="lg:w-full"> <div className="text-[10px] sm:text-xs text-slate-400 uppercase font-bold tracking-wider">Earnings Today</div> <div className="text-xl sm:text-2xl md:text-3xl font-black font-mono text-green-400">${earnings}</div> </div>
+            <div onClick={() => { setIsOnline(!isOnline); showNotification(isOnline ? "You are now offline" : "You are online and visible", "info"); }} className={`cursor-pointer px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm transition-all flex items-center gap-2 ${isOnline ? 'bg-green-500/20 text-green-400 border border-green-500/50' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
                 <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-slate-500'}`}></div> {isOnline ? 'ONLINE' : 'OFFLINE'}
             </div>
             </div>
 
-            <div className="flex-1 p-6 overflow-y-auto relative">
-            <button onClick={() => setView('landing')} className="absolute top-2 right-2 p-2 text-slate-600 hover:text-white"><Menu size={16}/></button>
+            <div className="flex-1 p-4 sm:p-5 md:p-6 overflow-y-auto relative">
+            <button onClick={() => setView('landing')} className="absolute top-2 right-2 p-1.5 sm:p-2 text-slate-600 hover:text-white"><Menu size={14} className="sm:w-4 sm:h-4"/></button>
 
             {!isOnline ? (
                 <div className="h-full flex flex-col items-center justify-center text-slate-600 space-y-4">
@@ -652,9 +652,9 @@ const LubeLink = () => {
     };
 
     return (
-        <div className="w-full h-screen font-sans bg-black flex items-center justify-center">
-            <div className="w-full h-full md:w-[400px] md:h-[850px] md:rounded-[3rem] overflow-hidden relative bg-slate-900 shadow-2xl border-8 border-slate-950">
-                <div className="absolute top-0 w-full h-8 bg-black/20 z-50 pointer-events-none backdrop-blur-[1px]"></div>
+        <div className="w-full min-h-screen font-sans bg-black flex items-center justify-center p-2 sm:p-4 md:p-6">
+            <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl h-full min-h-[600px] sm:min-h-[700px] md:min-h-[800px] md:rounded-2xl lg:rounded-3xl overflow-hidden relative bg-slate-900 shadow-2xl border-2 sm:border-4 md:border-8 border-slate-950">
+                <div className="absolute top-0 w-full h-4 sm:h-6 md:h-8 bg-black/20 z-50 pointer-events-none backdrop-blur-[1px]"></div>
                 {view === 'landing' && <Landing />}
                 {view === 'customer' && <CustomerView />}
                 {view === 'provider' && <ProviderView />}
@@ -665,10 +665,10 @@ const LubeLink = () => {
                 {notification && (
                     <div 
                         onClick={notification.onClick}
-                        className={`absolute top-12 left-1/2 -translate-x-1/2 w-[90%] z-50 animate-bounce-in cursor-pointer`}
+                        className={`absolute top-8 sm:top-12 left-1/2 -translate-x-1/2 w-[90%] sm:w-[85%] md:w-[80%] max-w-md z-50 animate-bounce-in cursor-pointer`}
                     >
-                    <div className={`px-4 py-3 rounded-lg shadow-2xl text-sm font-bold flex items-center gap-3 backdrop-blur-xl ${notification.type === 'success' ? 'bg-green-500/90 text-white' : 'bg-slate-800/90 text-white border border-slate-600'}`}>
-                        {notification.type === 'success' ? <CheckCircle size={18} /> : <Shield size={18} />}
+                    <div className={`px-3 sm:px-4 py-2 sm:py-3 rounded-lg shadow-2xl text-xs sm:text-sm md:text-base font-bold flex items-center gap-2 sm:gap-3 backdrop-blur-xl ${notification.type === 'success' ? 'bg-green-500/90 text-white' : 'bg-slate-800/90 text-white border border-slate-600'}`}>
+                        {notification.type === 'success' ? <CheckCircle size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Shield size={16} className="sm:w-[18px] sm:h-[18px]" />}
                         {notification.msg}
                     </div>
                     </div>
