@@ -1,3 +1,10 @@
+// Configuration for dynamic connection
+const API_CONFIG = {
+    host: window.location.hostname === 'localhost' ? 'localhost' : '192.168.1.10', 
+    port: '8081'
+};
+
+const BASE_URL = `http://${API_CONFIG.host}:${API_CONFIG.port}`;
 // --- Setup Dependencies ---
 const { useState, useEffect, useMemo } = React;
 
@@ -264,7 +271,7 @@ const LubeLink = () => {
         // status: idle, request_sent, verify_auth, bidding_review, found
         
         const [hasOwnOil, setHasOwnOil] = useState(false);
-        const [address, setAddress] = useState("123 Garage Blvd, Apt 4B");
+        const [address, setAddress] = useState("Detecting location...");
         const [authCode, setAuthCode] = useState(["","","",""]);
         
         // Calendar State
@@ -296,45 +303,195 @@ const LubeLink = () => {
 
         const timeSlots = ["08:00", "09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00"];
 
+        // 2. Use this effect to find the real address
+        useEffect(() => {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        
+                        try {
+                            // This service turns Lat/Lng into a real address
+                            const response = await fetch(
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                            );
+                            const data = await response.json();
+                            
+                            // Update the address in the form
+                            setFormData(prev => ({
+                                ...prev,
+                                address: data.display_name || "Location Found",
+                                location: { lat: latitude, lng: longitude }
+                            }));
+                        } catch (err) {
+                            setFormData(prev => ({ ...prev, address: "Address fetch failed" }));
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        setFormData(prev => ({ ...prev, address: "Permission denied" }));
+                    }
+                );
+            }
+        }, []);
+
         // Simulation: Trigger notification after broadcasting
         useEffect(() => {
-            if (status === 'request_sent') {
-                const timer = setTimeout(() => {
-                    showNotification(
-                        "SMS: 3 Providers bid on your request. Tap to view.", 
-                        "success",
-                        () => {
-                            setNotification(null);
-                            setStatus('verify_auth');
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        
+                        try {
+                            // This service translates Lat/Lng into a readable street address
+                            const response = await fetch(
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                            );
+                            const data = await response.json();
+                            
+                            // Update the address state with the real street name
+                            if (data.display_name) {
+                                setAddress(data.display_name);
+                            } else {
+                                setAddress("Location found, but address unknown");
+                            }
+                        } catch (err) {
+                            console.error("Geocoding error:", err);
+                            setAddress("Address service unavailable");
                         }
-                    );
-                }, 4000); 
-                return () => clearTimeout(timer);
+                    },
+                    (error) => {
+                        console.error("Location permission error:", error);
+                        setAddress("Location permission denied");
+                    },
+                    { enableHighAccuracy: true } // Request better GPS precision
+                );
+            } else {
+                setAddress("Geolocation not supported by browser");
             }
-        }, [status]);
+        }, []);
 
         const handleScheduleClick = () => {
             if (!address.trim()) { showNotification("Please enter an address first", "error"); return; }
             setBookingStage('scheduling');
         };
 
-        const handleBroadcastRequest = () => {
-            if (selectedTimeId === null) { showNotification("Please select a time slot", "error"); return; }
-            setBookingStage('selection'); 
-            setStatus('request_sent'); 
+        // const handleBroadcastRequest = () => {
+        //     if (selectedTimeId === null) { showNotification("Please select a time slot", "error"); return; }
+        //     setBookingStage('selection'); 
+        //     setStatus('request_sent'); 
+        // };
+        const handleBroadcastRequest = async () => {
+            if (selectedTimeId === null) { 
+                showNotification("Please select a time slot", "error"); 
+                return; 
+            }
+        
+            // 1. Prepare the data from app's state
+            const requestPayload = {
+                name: "Anika", // Replace with a dynamic name ????
+                car: `${savedCar.year} ${savedCar.make} ${savedCar.model}`, 
+                address: address, // This uses the address found by  GPS effect
+                lat: 0.0, 
+                lng: 0.0,
+                oil_type: selectedService.name,
+                date: dates[selectedDateId].dateNum.toString(),
+                time: timeSlots[selectedTimeId]
+            };
+        
+            try {
+                // 2. Send the data to FastAPI backend
+                const response = await fetch(`${BASE_URL}/api/requests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestPayload)
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Saved to database with ID:", data.id);
+                    
+                    // 3. Move the UI forward to the "Sent" screen
+                    setBookingStage('selection'); 
+                    setStatus('request_sent'); 
+                    showNotification("Request sent to local mechanics!", "success");
+                } else {
+                    throw new Error("Server error");
+                }
+            } catch (error) {
+                console.error("Connection failed:", error);
+                showNotification("Failed to save. Is the backend running?", "error");
+            }
         };
+        const handleVerifyCode = async () => {
+            if(authCode.join('').length < 4) { 
+                showNotification("Please enter full code", "error"); 
+                return; 
+            }
 
-        const handleVerifyCode = () => {
-            if(authCode.join('').length < 4) { showNotification("Please enter full code", "error"); return; }
-            setStatus('bidding_review');
-            setReceivedBids(mockBids);
-        };
+            // 1. Prepare the payload with dynamic inputs
+            const requestPayload = {
+                name: "Anika", // take this from an input field
+                car: "Toyota Tacoma", 
+                address: address,      
+                lat: location.lat,
+                lng: location.lng,
+                oil_type: selectedOil, // The oil chosen in Step 1
+                date: "2024-01-14",    // Dynamic date
+                time: timeSlots[selectedTimeId] // The string value of the time slot
+            };
 
-        const handleConfirmBid = (bid) => {
-            setSelectedBid(bid);
-            setStatus('found');
-            showNotification(`${bid.name} confirmed for ${timeSlots[selectedTimeId]}`, "success");
+            try {
+                // 2. Send to  FastAPI backend on port 8081
+                const response = await fetch(`${BASE_URL}/api/requests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestPayload)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Database ID:", data.id);
+                    
+                    // 3. UI Transition
+                    setStatus('bidding_review');
+                    showNotification("Searching for local mechanics...", "success");
+                    
+                    // OPTIONAL: Start polling for real bids from the database
+                    // fetchRealBids(data.id);
+                }
+            } catch (error) {
+                showNotification("Backend connection failed", "error");
+            }
         };
+        // const handleVerifyCode = () => {
+        //     if(authCode.join('').length < 4) { showNotification("Please enter full code", "error"); return; }
+        //     setStatus('bidding_review');
+        //     setReceivedBids(mockBids);
+        // };
+        const handleConfirmBid = async (bid) => {
+            try {
+                // Update the status in the database via API
+                const response = await fetch(`http://localhost:8081/api/requests/${requestId}/status`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'confirmed', provider_id: bid.id })
+                });
+        
+                if (response.ok) {
+                    setSelectedBid(bid);
+                    setStatus('found');
+                    showNotification(`Mechanic ${bid.name} is on the way!`, "success");
+                }
+            } catch (error) {
+                showNotification("Could not confirm bid", "error");
+            }
+        };
+        // const handleConfirmBid = (bid) => {
+        //     setSelectedBid(bid);
+        //     setStatus('found');
+        //     showNotification(`${bid.name} confirmed for ${timeSlots[selectedTimeId]}`, "success");
+        // };
 
         const handleCancel = () => {
             setStatus('idle');
@@ -362,7 +519,7 @@ const LubeLink = () => {
                 maxZoom: MAX_ZOOM,
             });
         
-            // 🌙 Dark map tiles
+            // Dark map tiles
             L.tileLayer(
                 "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
                 {
