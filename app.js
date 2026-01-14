@@ -351,34 +351,84 @@ const LubeLink = () => {
             setAuthCode(newCode);
             if (val && index < 3) document.getElementById(`code-${index+1}`).focus();
         };
-
+        /* Map Use effect */
+        useEffect(() => {
+            const MAX_ZOOM = 19;
+        
+            const map = L.map("map", {
+                zoomControl: false,
+                attributionControl: false,
+                minZoom: 3,
+                maxZoom: MAX_ZOOM,
+            });
+        
+            // 🌙 Dark map tiles
+            L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+                {
+                    maxZoom: MAX_ZOOM,
+                }
+            ).addTo(map);
+        
+            // const carIcon = L.icon({
+            //     iconUrl: "https://cdn-icons-png.flaticon.com/512/1048/1048316.png",
+            //     iconSize: [44, 44],
+            //     iconAnchor: [22, 22],
+            // });
+            // 1. Define the 3D Car + Pulse Icon
+            const customMarkerIcon = L.divIcon({
+                className: 'pulse-container',
+                html: `
+                    <div class="blue-pulse"></div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/1048/1048316.png" class="car-marker-3d" 
+                        style="width: 44px; height: 44px; position: relative; z-index: 10; transform: rotate(-10deg);" 
+                    />
+                `,
+                iconSize: [44, 44],
+                iconAnchor: [22, 22],
+            });
+        
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude, longitude } = pos.coords;
+        
+                    // 🔥 INSTANT MAX ZOOM ON LOAD
+                    map.setView([latitude, longitude], MAX_ZOOM, {
+                        animate: false,
+                    });
+        
+                    L.marker([latitude, longitude], {
+                        icon: customMarkerIcon,
+                    })
+                        .addTo(map)
+                        .bindPopup("🚗 Your Car Is Here", {
+                            autoPan: false,
+                        });
+                },
+                () => {
+                    // fallback (still zoomed in)
+                    map.setView([40.7128, -74.006], MAX_ZOOM - 2, {
+                        animate: false,
+                    });
+                }
+            );
+        
+            // 🔥 CRITICAL: Fix flex + animation sizing
+            requestAnimationFrame(() => {
+                map.invalidateSize();
+            });
+        
+            return () => map.remove();
+        }, []);
+        
+        
+        
         return (
             <div className="flex flex-col lg:flex-row h-full bg-slate-900 text-slate-100">
                 {/* Interactive Map Background */}
-                <div className="flex-1 bg-slate-800 relative overflow-hidden group min-h-[300px] sm:min-h-[400px] lg:min-h-full">
-                    <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                    
-                    {/* Map Markers */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <div className="relative">
-                        <div className="w-3 h-3 sm:w-4 sm:h-4 bg-amber-500 rounded-full animate-ping absolute top-0 left-0"></div>
-                        <div className="w-3 h-3 sm:w-4 sm:h-4 bg-amber-500 rounded-full border-2 border-white shadow-lg z-10 relative"></div>
-                        <div className="absolute -bottom-8 sm:-bottom-10 left-1/2 -translate-x-1/2 bg-slate-900/90 backdrop-blur border border-slate-700 px-2 sm:px-3 py-1 rounded-lg text-[10px] sm:text-xs font-bold whitespace-nowrap shadow-xl flex items-center gap-1 sm:gap-2">
-                            <MapPin size={8} className="sm:w-[10px] sm:h-[10px] text-amber-500"/>
-                            <span className="max-w-[120px] sm:max-w-none truncate">{address.length > 20 ? address.substring(0,20)+'...' : address}</span>
-                        </div>
-                        </div>
-                    </div>
-                    
-                    {/* Header */}
-                    <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 flex justify-between items-start pointer-events-none">
-                        <button onClick={() => setView('landing')} className="pointer-events-auto p-1.5 sm:p-2 bg-slate-900/90 rounded-full shadow-lg backdrop-blur-md">
-                        <Menu size={18} className="sm:w-5 sm:h-5" />
-                        </button>
-                        <div className="bg-slate-900/90 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-mono shadow-lg backdrop-blur-md border border-slate-700">
-                        <span className="text-green-400">●</span> {savedCar.make} {savedCar.model}
-                        </div>
-                    </div>
+                {/* Interactive Leaflet Map */}
+                <div className="flex-1 relative min-h-[300px] sm:min-h-[400px] lg:min-h-full">
+                    <div id="map" className="absolute inset-0 z-0"></div>
                 </div>
 
                 {/* Bottom Action Sheet */}
