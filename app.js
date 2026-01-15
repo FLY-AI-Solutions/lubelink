@@ -1,3 +1,5 @@
+const { createPortal } = ReactDOM;
+
 // Configuration for dynamic connection
 const API_CONFIG = {
     host: window.location.hostname === 'localhost' ? 'localhost' : '192.168.1.10', 
@@ -85,6 +87,7 @@ const callGeminiAPI = async (prompt) => {
         return "I'm having trouble connecting to the garage server. Please try again later.";
     }
 };
+
 
 // --- AI Mechanic Modal ---
 const AIMechanicModal = ({ onClose }) => {
@@ -302,14 +305,136 @@ const LubeLink = () => {
         }, []);
 
         const timeSlots = ["08:00", "09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00"];
+        // Add these to your state declarations
+        // --- 1. State for Verification ---
+        // Inside CustomerView component
+        const [verifying, setVerifying] = useState(null); // Controls 'email', 'otp', or null
+        const [email, setEmail] = useState("");
+        const [otp, setOtp] = useState(["", "", "", ""]);
+        const [tempData, setTempData] = useState(null);
+
+        // --- 2. Handlers for the Popup Flow ---
+        const handleRequestBids = (formData) => {
+            setTempData(formData);
+            setVerifying('email'); // Triggers the first popup
+        };
+
+        const sendOtp = () => {
+            if (!email.includes('@')) return alert("Please enter a valid email");
+            setVerifying('otp'); // Triggers the OTP popup
+        };
+
+        const verifyOtpAndSubmit = async () => {
+            if (otp.join('') === "1234") { // Mock code for testing
+                try {
+                    const response = await fetch(`${BASE_URL}/api/requests`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ...tempData, email })
+                    });
+                    if (response.ok) {
+                        setVerifying(null);
+                        setStatus('request_sent'); // Shows success screen
+                    }
+                } catch (err) {
+                    console.error("Submission failed:", err);
+                }
+            } else {
+                alert("Invalid code. Try 1234");
+            }
+        };
+        // VerificationModal
+        const VerificationModal = ({ stage, email, setEmail, otp, setOtp, onSend, onVerify, onClose }) => {
+            return createPortal(
+                <div className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm">
+                    <div className="bg-slate-900 border border-slate-700 
+                                    w-full max-w-md mx-4 rounded-2xl p-6 
+                                    shadow-2xl animate-bounce-inbg-slate-900 border border-slate-700 
+                                    w-full max-w-md rounded-2xl p-6 
+                                    shadow-2xl animate-bounce-in
+                                    fixed top-1/2 left-1/2 
+                                    -translate-x-1/2 -translate-y-1/2">
+                        
+                        {stage === 'email' ? (
+                            <div className="space-y-4">
+                                <h3 className="text-xl font-bold text-white">Verify your Email</h3>
+                                <p className="text-slate-400 text-sm">
+                                    We'll send a 4-digit code to verify your request.
+                                </p>
+        
+                                <input
+                                    className="w-full bg-slate-800 border border-slate-600 
+                                               rounded-lg p-3 text-white outline-none 
+                                               focus:border-amber-500"
+                                    placeholder="your@email.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+        
+                                <button
+                                    onClick={onSend}
+                                    className="w-full bg-amber-500 hover:bg-amber-400 
+                                               py-3 rounded-lg font-black text-slate-900"
+                                >
+                                    Send Code
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="space-y-4 text-center">
+                                <h3 className="text-xl font-bold text-white">Enter OTP</h3>
+                                <p className="text-slate-400 text-sm">Sent to {email}</p>
+        
+                                <div className="flex justify-center gap-3">
+                                    {otp.map((digit, idx) => (
+                                        <input
+                                            key={idx}
+                                            maxLength={1}
+                                            className="w-12 h-14 bg-slate-800 border 
+                                                       border-slate-600 rounded-lg 
+                                                       text-center text-2xl font-black"
+                                            value={digit}
+                                            onChange={(e) => {
+                                                const next = [...otp];
+                                                next[idx] = e.target.value;
+                                                setOtp(next);
+                                                if (e.target.value && e.target.nextSibling) {
+                                                    e.target.nextSibling.focus();
+                                                }
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+        
+                                <button
+                                    onClick={onVerify}
+                                    className="w-full bg-green-600 hover:bg-green-500 
+                                               py-3 rounded-lg font-black text-white"
+                                >
+                                    Confirm & Request Bids
+                                </button>
+                            </div>
+                        )}
+        
+                        <button
+                            onClick={onClose}
+                            className="mt-4 w-full text-sm text-slate-400 hover:text-white"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>,
+                document.body
+            );
+        };
+        
 
         // 2. Use this effect to find the real address
+        // --- Corrected Geolocation Effect ---
         useEffect(() => {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
                         const { latitude, longitude } = position.coords;
-                        
                         try {
                             // This service turns Lat/Lng into a real address
                             const response = await fetch(
@@ -317,59 +442,60 @@ const LubeLink = () => {
                             );
                             const data = await response.json();
                             
-                            // Update the address in the form
-                            setFormData(prev => ({
-                                ...prev,
-                                address: data.display_name || "Location Found",
-                                location: { lat: latitude, lng: longitude }
-                            }));
+                            // FIX: Use setAddress instead of setFormData
+                            if (data.display_name) {
+                                setAddress(data.display_name);
+                            } else {
+                                setAddress("Location Found");
+                            }
                         } catch (err) {
-                            setFormData(prev => ({ ...prev, address: "Address fetch failed" }));
+                            console.error("Geocoding error:", err);
+                            setAddress("Address fetch failed");
                         }
                     },
                     (error) => {
-                        console.error(error);
-                        setFormData(prev => ({ ...prev, address: "Permission denied" }));
+                        console.error("Location permission error:", error);
+                        setAddress("Permission denied");
                     }
                 );
             }
         }, []);
 
         // Simulation: Trigger notification after broadcasting
-        useEffect(() => {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        const { latitude, longitude } = position.coords;
+        // useEffect(() => {
+        //     if ("geolocation" in navigator) {
+        //         navigator.geolocation.getCurrentPosition(
+        //             async (position) => {
+        //                 const { latitude, longitude } = position.coords;
                         
-                        try {
-                            // This service translates Lat/Lng into a readable street address
-                            const response = await fetch(
-                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-                            );
-                            const data = await response.json();
+        //                 try {
+        //                     // This service translates Lat/Lng into a readable street address
+        //                     const response = await fetch(
+        //                         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+        //                     );
+        //                     const data = await response.json();
                             
-                            // Update the address state with the real street name
-                            if (data.display_name) {
-                                setAddress(data.display_name);
-                            } else {
-                                setAddress("Location found, but address unknown");
-                            }
-                        } catch (err) {
-                            console.error("Geocoding error:", err);
-                            setAddress("Address service unavailable");
-                        }
-                    },
-                    (error) => {
-                        console.error("Location permission error:", error);
-                        setAddress("Location permission denied");
-                    },
-                    { enableHighAccuracy: true } // Request better GPS precision
-                );
-            } else {
-                setAddress("Geolocation not supported by browser");
-            }
-        }, []);
+        //                     // Update the address state with the real street name
+        //                     if (data.display_name) {
+        //                         setAddress(data.display_name);
+        //                     } else {
+        //                         setAddress("Location found, but address unknown");
+        //                     }
+        //                 } catch (err) {
+        //                     console.error("Geocoding error:", err);
+        //                     setAddress("Address service unavailable");
+        //                 }
+        //             },
+        //             (error) => {
+        //                 console.error("Location permission error:", error);
+        //                 setAddress("Location permission denied");
+        //             },
+        //             { enableHighAccuracy: true } // Request better GPS precision
+        //         );
+        //     } else {
+        //         setAddress("Geolocation not supported by browser");
+        //     }
+        // }, []);
 
         const handleScheduleClick = () => {
             if (!address.trim()) { showNotification("Please enter an address first", "error"); return; }
@@ -686,9 +812,46 @@ const LubeLink = () => {
                         </div>
 
                         <div className="mt-auto pt-4">
-                            <button onClick={handleBroadcastRequest} className={`w-full py-4 font-black text-lg rounded-xl transition-all flex items-center justify-center gap-2 ${selectedTimeId !== null ? 'bg-amber-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:bg-amber-400' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}`}>
+                            {/* <button onClick={handleBroadcastRequest} className={`w-full py-4 font-black text-lg rounded-xl transition-all flex items-center justify-center gap-2 ${selectedTimeId !== null ? 'bg-amber-500 text-slate-900 shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:bg-amber-400' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}`}>
                                 <Zap className="fill-current" size={20} /> REQUEST BIDS
-                            </button>
+                            </button> */}
+                            {/* // Find this button in your CustomerView JSX */}
+                            {/* <button 
+                                onClick={() => handleRequestBids({
+                                    name: "Customer",
+                                    car: `${savedCar.year} ${savedCar.make} ${savedCar.model}`,
+                                    address: address,
+                                    oil_type: selectedService.name,
+                                    date: dates[selectedDateId].dateNum.toString(),
+                                    time: timeSlots[selectedTimeId]
+                                })}
+                                className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black rounded-xl shadow-lg transition-all"
+                                >
+                                REQUEST BIDS
+                                </button> */}
+                            <button 
+                                disabled={selectedTimeId === null}
+                                onClick={() => {
+                                    if (selectedTimeId === null) return;
+                                    handleRequestBids({
+                                    name: "Customer",
+                                    car: `${savedCar.year} ${savedCar.make} ${savedCar.model}`,
+                                    address: address,
+                                    oil_type: selectedService.name,
+                                    date: dates[selectedDateId].dateNum.toString(),
+                                    time: timeSlots[selectedTimeId]
+                                    });
+                                }}
+                                className={`
+                                    w-full py-4 font-black rounded-xl transition-all
+                                    ${selectedTimeId === null
+                                    ? "bg-slate-700 text-slate-500 cursor-not-allowed"
+                                    : "bg-amber-500 hover:bg-amber-400 text-slate-900 shadow-lg"
+                                    }
+                                `}
+                                >
+                                REQUEST BIDS
+                            </button>    
                         </div>
                     </div>
                 )}
@@ -804,6 +967,18 @@ const LubeLink = () => {
                 )}
 
                 </div>
+                {verifying && (
+                    <VerificationModal 
+                        stage={verifying}
+                        email={email}
+                        setEmail={setEmail}
+                        otp={otp}
+                        setOtp={setOtp}
+                        onSend={sendOtp}
+                        onVerify={verifyOtpAndSubmit}
+                        onClose={() => setVerifying(null)}
+                    />
+                )}    
             </div>
         );
     };
